@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+    <PropertyGroup>
+        <TargetFramework>net9.0-browser</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Browser"/>
+        <PackageReference Include="Avalonia.LinuxFramebuffer" />
+        <PackageReference Include="Material.Icons.Avalonia" />
+        <PackageReference Include="Semi.Avalonia" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BoTech.StarClock\BoTech.StarClock.csproj"/>
+    </ItemGroup>
+</Project>
