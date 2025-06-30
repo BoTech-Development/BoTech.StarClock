@@ -9,6 +9,9 @@
     <ItemGroup>
         <PackageReference Include="Avalonia.iOS"/>
         <PackageReference Include="Avalonia.LinuxFramebuffer" />
+        <PackageReference Include="DialogHost.Avalonia" />
+        <PackageReference Include="Irihi.Ursa" />
+        <PackageReference Include="Irihi.Ursa.Themes.Semi" />
         <PackageReference Include="Material.Icons.Avalonia" />
         <PackageReference Include="Semi.Avalonia" />
     </ItemGroup>

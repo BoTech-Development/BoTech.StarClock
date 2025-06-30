@@ -21,7 +21,22 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Avalonia.ReactiveUI"/>
+        <PackageReference Include="DialogHost.Avalonia" />
+        <PackageReference Include="Irihi.Ursa" />
+        <PackageReference Include="Irihi.Ursa.Themes.Semi" />
         <PackageReference Include="Material.Icons.Avalonia" />
         <PackageReference Include="Semi.Avalonia" />
+        <PackageReference Include="System.Management" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\SlideShowView.axaml.cs">
+        <DependentUpon>SlideShowView.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Theme\" />
     </ItemGroup>
 </Project>

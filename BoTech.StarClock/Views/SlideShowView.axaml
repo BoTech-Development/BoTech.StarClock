@@ -1,0 +1,41 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vm="clr-namespace:BoTech.StarClock.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="480"
+             x:Class="BoTech.StarClock.Views.SlideShowView"
+             Width="800"
+             Height="480"
+             MaxWidth="800"
+             MaxHeight="480"
+             x:DataType="vm:SlideShowViewModel">
+    <Design.DataContext>
+        <vm:SlideShowViewModel/>
+    </Design.DataContext>
+    <RelativePanel>
+        <Carousel x:Name="ContentCarousel" 
+                  MinWidth="800"
+                  MinHeight="480"
+                  Items=""
+                  Theme="{DynamicResource FullCarousel}"
+                  ItemsSource="{Binding Pages}"
+                  Classes.Dot="True"
+                  Classes.Center="True">
+         
+        </Carousel>
+        <StackPanel RelativePanel.AlignBottomWith="ContentCarousel" 
+                    Orientation="Horizontal">
+            <Button>
+                <Button.ContextFlyout>
+                    <Flyout>
+                        <Button Command="{Binding CheckForUpdatesCommand}">Check for Updates</Button>
+                    </Flyout>
+                </Button.ContextFlyout>
+                <avalonia:MaterialIcon Kind="Settings" />
+            </Button>
+            <TextBlock VerticalAlignment="Center">v1.0.1</TextBlock>
+        </StackPanel>
+    </RelativePanel>
+</UserControl>

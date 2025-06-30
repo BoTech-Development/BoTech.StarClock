@@ -20,6 +20,9 @@
     <ItemGroup>
         <PackageReference Include="Avalonia.Android"/>
         <PackageReference Include="Avalonia.LinuxFramebuffer" />
+        <PackageReference Include="DialogHost.Avalonia" />
+        <PackageReference Include="Irihi.Ursa" />
+        <PackageReference Include="Irihi.Ursa.Themes.Semi" />
         <PackageReference Include="Material.Icons.Avalonia" />
         <PackageReference Include="Semi.Avalonia" />
         <PackageReference Include="Xamarin.AndroidX.Core.SplashScreen"/>

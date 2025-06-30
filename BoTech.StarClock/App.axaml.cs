@@ -19,14 +19,14 @@ public partial class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                DataContext = new HomeViewModel()
+                DataContext = new SlideShowViewModel()
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new HomeView()
+            singleViewPlatform.MainView = new SlideShowView()
             {
-                DataContext = new HomeViewModel()
+                DataContext = new SlideShowViewModel()
             };
         }
 

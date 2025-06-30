@@ -1,0 +1,21 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:BoTech.StarClock.ViewModels.SlideShowPages"
+             x:Class="BoTech.StarClock.Views.SlideShowPages.ClockPageView"
+             x:DataType="vm:ClockPageViewModel"
+             Width="800"
+             Height="480">
+    <RelativePanel>
+        <Image Source="{Binding BackgroundImage}"/>
+        <StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" 
+                    RelativePanel.AlignVerticalCenterWithPanel="True"
+                    Orientation="Vertical">
+            <TextBlock FontWeight="Bold"
+                       FontSize="26"
+                       Text="{Binding Time}"/>
+            <TextBlock FontWeight="Bold"
+                       FontSize="20"
+                       Text="{Binding Date}"/>
+        </StackPanel>
+    </RelativePanel>
+</UserControl>

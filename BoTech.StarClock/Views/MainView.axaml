@@ -7,11 +7,11 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="BoTech.StarClock.Views.MainView"
              x:DataType="vm:MainViewModel"
-             Width="480"
-             Height="320">
+             Width="800"
+             Height="480">
   <Design.DataContext>
     <vm:MainViewModel />
   </Design.DataContext>
 
-  <views:HomeView></views:HomeView>
+  <views:SlideShowView></views:SlideShowView>
 </UserControl>
