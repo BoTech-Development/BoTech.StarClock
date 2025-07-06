@@ -130,6 +130,27 @@ public class VersionInfo
     {
         return GetVersionString();
     }
+    /// <summary>
+    /// Create only a Version string like 1.2.13.10.Alpha.LTS
+    /// </summary>
+    /// <returns></returns>
+    public string GetVersionStringWithoutDateTime()
+    {
+        int fieldCount = 3; //major.minor.build
+        if(Version.Revision != -1) fieldCount = 4; //major.minor.build.revision
+        
+        if (IsAlpha)
+            return Version.ToString(fieldCount) + ".Alpha";
+        if (IsAlpha && IsLTS)
+            return Version.ToString(fieldCount) + ".Alpha.LTS";
+        if (IsBeta)
+            return Version.ToString(fieldCount) + ".Beta";
+        if (IsBeta && IsLTS)
+            return Version.ToString(fieldCount) + ".Beta.LTS";
+        if(IsLTS)
+            return Version.ToString(fieldCount) + ".LTS";
+        return Version.ToString(fieldCount);
+    }
 
     /// <summary>
     /// Creates a Version String in this Format: Mayor.Minor.Patch.Build.{Alpha or Beta}.{LTS if enabled}-(dd.MM.yyyy_HH:mm:ss)

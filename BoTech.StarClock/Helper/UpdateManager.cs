@@ -97,7 +97,7 @@ public class UpdateManager
                 VersionInfo? oldVersion = null;
                 if ((oldVersion = VersionInfo.Parse(versionString)) != null)
                 {
-                    if (!oldVersion.Equals(ThisVersion))
+                    if (!oldVersion.Equals(ThisVersion.ToString().Replace("(", "[").Replace(")", "]")))
                     {
                         Directory.Delete(installation, true);
                     }
@@ -261,7 +261,7 @@ public class UpdateManager
         if (updateAsset != null)
         {
             ExtractZipWithProgress("/home/rpi/botech/temp/update/" + updateAsset.Name,
-                "/home/rpi/botech/bot.sc/" + NextUpdate.VersionInfo + "/", NextUpdate.VersionInfo.ToString());
+                "/home/rpi/botech/bot.sc/" + NextUpdate.VersionInfo.ToString().Replace("(", "[").Replace(")", "]") + "/", NextUpdate.VersionInfo.ToString());
             File.Delete("/home/rpi/botech/bot.sc/AutoStart.sh");
             File.Move("/home/rpi/botech/temp/update/AutoStart.sh", "/home/rpi/botech/bot.sc/AutoStart.sh");
             return true;
@@ -312,8 +312,8 @@ public class UpdateManager
     {
         CurrentStatus = "Prepare download...";
         IsProgressBarIndeterminate = true;
-        // There must be a zip File which contains the contents of the publish folder.
-        ReleaseAsset? updateAsset = release.Release.Assets.Where(r => r.Name.Equals(release.VersionInfo.ToString() + "_arm64.zip")).FirstOrDefault();
+        // There must be a zip File that contains the contents of the publish folder.
+        ReleaseAsset? updateAsset = release.Release.Assets.Where(r => r.Name.Equals(release.VersionInfo.GetVersionStringWithoutDateTime() + "_arm64.zip")).FirstOrDefault();
         // There must be a .sh File which contains the dotnet command which starts the app => Example: dotnet /home/rpi/botech/bot.sc/v2.3.16.Alpha.LTS-(01.01.2030_12:12:12)/BoTech.StarClock.Desktop.dll
         ReleaseAsset? autostartAsset = release.Release.Assets.Where(r => r.Name.Equals("AutoStart.sh")).FirstOrDefault();
         if (updateAsset != null && autostartAsset != null)
