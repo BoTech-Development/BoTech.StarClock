@@ -20,6 +20,7 @@
     <PackageVersion Include="Irihi.Ursa" Version="1.11.1" />
     <PackageVersion Include="Irihi.Ursa.Themes.Semi" Version="1.11.1" />
     <PackageVersion Include="Material.Icons.Avalonia" Version="2.4.1" />
+    <PackageVersion Include="Octokit" Version="14.0.0" />
     <PackageVersion Include="Packaging.Targets" Version="0.1.232" />
     <PackageVersion Include="Semi.Avalonia" Version="11.2.1.8" />
     <PackageVersion Include="System.Management" Version="9.0.6" />

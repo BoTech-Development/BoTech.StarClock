@@ -10,9 +10,11 @@ sudo apt upgrade -y
 sudo apt autoremove
 # Then download the .deb file. The file Name will be passed by the application.
 wget https://debian.botech.dev/BoTech.StarClock/"$0"
-# unistalling the old version
+# .deb File must be accessible by apt
+sudo chmod 777 "$0" 
+# uninstalling the old version
 sudo apt remove BoTech.StarClock
 # installing the new version
-sudo apt install ./$
+sudo apt install ~/$ -y
 #reboot and the app will start automatically through the service
 sudo reboot now

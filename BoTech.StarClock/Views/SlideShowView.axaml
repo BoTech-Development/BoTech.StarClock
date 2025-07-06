@@ -27,14 +27,16 @@
         </Carousel>
         <StackPanel RelativePanel.AlignBottomWith="ContentCarousel" 
                     Orientation="Horizontal">
-            <Button>
-                <Button.ContextFlyout>
-                    <Flyout>
-                        <Button Command="{Binding CheckForUpdatesCommand}">Check for Updates</Button>
-                    </Flyout>
-                </Button.ContextFlyout>
-                <avalonia:MaterialIcon Kind="Settings" />
+            <Button Command="{Binding CheckForUpdatesCommand}">
+                <avalonia:MaterialIcon Kind="Update" />
             </Button>
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding CurrentStatus}" />
+                <ProgressBar Minimum="0" 
+                             Maximum="100" 
+                             Value="{Binding CurrentProgress}"
+                             IsIndeterminate="{Binding IsProgressBarIndeterminate}"/> 
+            </StackPanel>
             <TextBlock VerticalAlignment="Center">v1.0.1</TextBlock>
         </StackPanel>
     </RelativePanel>

@@ -13,6 +13,7 @@
         <PackageReference Include="Irihi.Ursa" />
         <PackageReference Include="Irihi.Ursa.Themes.Semi" />
         <PackageReference Include="Material.Icons.Avalonia" />
+        <PackageReference Include="Octokit" />
         <PackageReference Include="Semi.Avalonia" />
     </ItemGroup>
 
