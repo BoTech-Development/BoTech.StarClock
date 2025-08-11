@@ -37,7 +37,7 @@
                              Value="{Binding CurrentProgress}"
                              IsIndeterminate="{Binding IsProgressBarIndeterminate}"/> 
             </StackPanel>
-            <TextBlock VerticalAlignment="Center">v1.0.1</TextBlock>
+            <TextBlock VerticalAlignment="Center">v1.0.3</TextBlock>
         </StackPanel>
     </RelativePanel>
 </UserControl>

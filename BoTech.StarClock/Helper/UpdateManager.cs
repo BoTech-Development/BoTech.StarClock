@@ -17,10 +17,20 @@ namespace BoTech.StarClock.Helper;
 public delegate void CurrentStatusChanged(UpdateManager updaterInstance, string currentStatus);
 public class UpdateManager
 {
-    public UpdateManager()
-    {
-        _client = new GitHubClient(new ProductHeaderValue("BoTech.StarClock_" + ThisVersion));
-    }
+    /// <summary>
+    /// Home Path for all BoTech products and temp/AppData files
+    /// old => CommonDocuments
+    /// </summary>
+    private static readonly string HomePath = SystemPaths.GetBaseInstallationPath() + "/botech/";
+    /// <summary>
+    /// The Standard installation folder
+    /// </summary>
+    private static readonly string ProductPath = SystemPaths.GetBaseInstallationPath() + "/botech/bot.sc/";
+    /// <summary>
+    /// Temp folder for Updating the products
+    /// </summary>
+    private static readonly string UpdatePath = SystemPaths.GetBaseInstallationPath() + "/botech/temp/update/";
+
 
     private GitHubClient _client;
     private string _currentVersionDebFileName = String.Empty;
@@ -28,7 +38,7 @@ public class UpdateManager
     /// <summary>
     /// The hardcoded Version Number of this Product
     /// </summary>
-    public readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,1))
+    public readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,3))
     {
         IsAlpha = true
     };
@@ -44,7 +54,7 @@ public class UpdateManager
     public string CurrentStatus
     {
         get => _currentStatus;
-        private set
+        set
         {
             _currentStatus = value;
             OnCurrentStatusChanged(this, _currentStatus);
@@ -64,7 +74,7 @@ public class UpdateManager
     public int CurrentProgress
     {
         get => _currentProgress;
-        private set
+        set
         {
             _currentProgress =  value;
             OnCurrentStatusChanged(this, _currentStatus);
@@ -81,6 +91,15 @@ public class UpdateManager
             OnCurrentStatusChanged(this, _currentStatus);
         }
     }
+    public UpdateManager()
+    {
+        _client = new GitHubClient(new ProductHeaderValue("BoTech.StarClock_" + ThisVersion.GetVersionStringWithoutDateTime()));
+        Console.WriteLine("------Folder:------");
+        Console.WriteLine(HomePath);
+        Console.WriteLine(ProductPath);
+        Console.WriteLine(UpdatePath);
+        Console.WriteLine("------------");
+    }
     /// <summary>
     /// Deletes all old installed Versions of this Software, because during an update it isn't possible to delete all file of the current Version
     /// => That would mean that the software deletes its .dll or .exe file while it runs 
@@ -94,19 +113,17 @@ public class UpdateManager
             foreach (string installation in oldInstallations)
             {
                 string versionString = installation.Replace("/home/rpi/botech/bot.sc/", "").Replace("/", "");
-                VersionInfo? oldVersion = null;
-                if ((oldVersion = VersionInfo.Parse(versionString)) != null)
+                if (!versionString.Equals(ThisVersion.GetVersionStringWithoutDateTime()))
                 {
-                    if (!oldVersion.Equals(ThisVersion.ToString().Replace("(", "[").Replace(")", "]")))
-                    {
-                        Directory.Delete(installation, true);
-                    }
+                    Directory.Delete(installation, true);
                 }
             }
         }
         catch (Exception e)
         {
+            Console.WriteLine("Error by deleting old Versions!!!");
             Console.WriteLine(e);
+            Console.WriteLine("-----------------------------------");
         }
 
         CurrentStatus = "Ready.";
@@ -136,13 +153,13 @@ public class UpdateManager
         unstableReleases.Sort((x,y) => x.Release.CreatedAt.CompareTo(y.Release.CreatedAt));
         
         // Check if there is a stable Update available
-        if (stableReleases[0].VersionInfo.IsLowerThanThis(ThisVersion))
+        if (stableReleases.Count > 0 && stableReleases[0].VersionInfo.IsLowerThanThis(ThisVersion))
         {
             NextUpdate = stableReleases[0];
             IsNextUpdateUnstable = false;
             return true;
         }
-        if (unstableReleases[0].VersionInfo.IsLowerThanThis(ThisVersion))
+        if (unstableReleases.Count > 0 && unstableReleases[0].VersionInfo.IsLowerThanThis(ThisVersion))
         {
             NextUpdate = unstableReleases[0];
             IsNextUpdateUnstable = true;
@@ -238,95 +255,74 @@ public class UpdateManager
     /// <returns>False when an error occurred</returns>
     public bool InstallUpdate()
     {
-        if (DownloadUpdate(NextUpdate))
+        ReleaseAsset? updateAsset = null;
+        FileDownloader downloader = new FileDownloader();
+        downloader.FileProgressChanged += DownloaderOnFileProgressChanged;
+        if (DownloadUpdate(NextUpdate,  out updateAsset) && updateAsset != null)
         {
-            if (ExtractUpdate())
-            {
-                return true;
-            }
+            ExtractUpdate(updateAsset);
+            CleanUpDirectory(UpdatePath);
+            CurrentProgress = 100;
+            IsProgressBarIndeterminate = false;
+            return true;
         }
         return false;
         Environment.Exit(0); // Shut app Down
     }
+
+
+
     /// <summary>
     /// Extracts all files and moves the AutoStar.sh script.
     /// </summary>
     /// <returns></returns>
-    private bool ExtractUpdate()
+    private void ExtractUpdate(ReleaseAsset updateAsset)
     {
         CurrentStatus = "Preparing to extract/install update...";
         IsProgressBarIndeterminate = true;
-        Directory.CreateDirectory("/home/rpi/botech/bot.sc/" + NextUpdate.VersionInfo.ToString() + "/");
-        ReleaseAsset? updateAsset = NextUpdate.Release.Assets.Where(r => r.Name.Equals(NextUpdate.VersionInfo.ToString() + "_arm64.zip")).FirstOrDefault();
-        if (updateAsset != null)
-        {
-            ExtractZipWithProgress("/home/rpi/botech/temp/update/" + updateAsset.Name,
-                "/home/rpi/botech/bot.sc/" + NextUpdate.VersionInfo.ToString().Replace("(", "[").Replace(")", "]") + "/", NextUpdate.VersionInfo.ToString());
-            File.Delete("/home/rpi/botech/bot.sc/AutoStart.sh");
-            File.Move("/home/rpi/botech/temp/update/AutoStart.sh", "/home/rpi/botech/bot.sc/AutoStart.sh");
-            return true;
-        }
-
-        return false;
+        Directory.CreateDirectory(ProductPath + NextUpdate.VersionInfo.GetVersionStringWithoutDateTime() + "/");
+        IsProgressBarIndeterminate = false;
+        new ZipExtractor(this).ExtractZipWithProgress(UpdatePath + updateAsset.Name, ProductPath + NextUpdate.VersionInfo.GetVersionStringWithoutDateTime() + "/", NextUpdate.VersionInfo.ToString());
+        
+        CurrentStatus = "Installing AutoStart.py ...";
+        IsProgressBarIndeterminate = true;
+        File.Delete(ProductPath + "AutoStart.py");
+        File.Move(UpdatePath + "AutoStart.py", ProductPath + "AutoStart.py");
     }
-    /// <summary>
-    /// Extracts any .zip file to a specific folder.
-    /// </summary>
-    /// <param name="zipPath">path to the zip file</param>
-    /// <param name="extractPath">the destination folder</param>
-    /// <param name="progressText">The string which should be shown.</param>
-    private void ExtractZipWithProgress(string zipPath, string extractPath, string progressText)
-    {
-        using (ZipArchive archive = ZipFile.OpenRead(zipPath))
-        {
-            int totalEntries = archive.Entries.Count;
-            int processedEntries = 0;
-
-            foreach (var entry in archive.Entries)
-            {
-                string destinationPath = Path.Combine(extractPath, entry.FullName);
-
-                if (string.IsNullOrEmpty(entry.Name)) // Handle directories
-                {
-                    Directory.CreateDirectory(destinationPath);
-                }
-                else
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
-                    entry.ExtractToFile(destinationPath, overwrite: true);
-                }
-
-                processedEntries++;
-                CurrentProgress = (int)((double)processedEntries / totalEntries * 100);
-                CurrentStatus = "Extracting " + progressText + " (" + processedEntries + "/" + totalEntries + ")";
-            }
-        }
-
-    }
+  
     /// <summary>
     /// Downloads all necessary Files for the Update
     /// </summary>
     /// <param name="release"></param>
+    /// <param name="updateAsset">This out parameter will be populated with information about the .zip file, when this function returns true.</param>
     /// <returns>false when an error occured.</returns>
-    private bool DownloadUpdate(VersionedGitRelease release)
+    private bool DownloadUpdate(VersionedGitRelease release, out ReleaseAsset? updateAsset)
     {
         CurrentStatus = "Prepare download...";
         IsProgressBarIndeterminate = true;
+        Console.WriteLine("Preparing Download...");
         // There must be a zip File that contains the contents of the publish folder.
-        ReleaseAsset? updateAsset = release.Release.Assets.Where(r => r.Name.Equals(release.VersionInfo.GetVersionStringWithoutDateTime() + "_arm64.zip")).FirstOrDefault();
+        updateAsset = release.Release.Assets.Where(r => r.Name.Equals(release.VersionInfo.GetVersionStringWithoutDateTime() + "_arm64.zip")).FirstOrDefault();
         // There must be a .sh File which contains the dotnet command which starts the app => Example: dotnet /home/rpi/botech/bot.sc/v2.3.16.Alpha.LTS-(01.01.2030_12:12:12)/BoTech.StarClock.Desktop.dll
-        ReleaseAsset? autostartAsset = release.Release.Assets.Where(r => r.Name.Equals("AutoStart.sh")).FirstOrDefault();
+        ReleaseAsset? autostartAsset = release.Release.Assets.Where(r => r.Name.Equals("AutoStart.py")).FirstOrDefault();
+        
+        Console.WriteLine(release.VersionInfo.GetVersionStringWithoutDateTime());
+        Console.WriteLine(updateAsset?.Name);
+        Console.WriteLine(autostartAsset?.Name);
+
+        FileDownloader downloader = new FileDownloader();
+        downloader.FileProgressChanged += DownloaderOnFileProgressChanged;
+        
         if (updateAsset != null && autostartAsset != null)
         {
-            // Cleanup the update Directory => normally the app do it after the update but it is saver to do it twice.
-            CleanUpDirectory("/home/rpi/botech/temp/update");
+            Console.WriteLine("Attempting to cleanup update directory...");
+            // Cleanup the update Directory => normally the app does it after the update, but it is saver to do it twice.
+            CleanUpDirectory(UpdatePath);
             // Now let's download the update file to a temp directory
-            if (DownloadFileWithProgress(updateAsset.BrowserDownloadUrl.Replace(updateAsset.Name, ""), updateAsset.Name,
-                    "/home/rpi/botech/temp/update/", "Binaries").Result)
+            if (downloader.DownloadFileWithProgress(updateAsset.BrowserDownloadUrl, UpdatePath + "/" + updateAsset.Name)) //DownloadFileWithProgress(updateAsset.BrowserDownloadUrl.Replace(updateAsset.Name, ""), updateAsset.Name, UpdatePath, "Binaries").Result)
             {
                 // Download the AutoStart.sh File
-                if (DownloadFileWithProgress(autostartAsset.BrowserDownloadUrl.Replace(autostartAsset.Name, ""),
-                        autostartAsset.Name, "/home/rpi/botech/temp/update/", "AutoStart script").Result)
+                if ( downloader.DownloadFileWithProgress(autostartAsset.BrowserDownloadUrl, UpdatePath + "/" + autostartAsset.Name)) //DownloadFileWithProgress(autostartAsset.BrowserDownloadUrl.Replace(autostartAsset.Name, ""), autostartAsset.Name, UpdatePath, "AutoStart script").Result)
                 {
                     return true;
                 }
@@ -334,6 +330,16 @@ public class UpdateManager
            
         }
         return false;
+    }
+    /// <summary>
+    /// Event will be called when an update file will be downloaded.
+    /// </summary>
+    /// <param name="e"></param>
+    private void DownloaderOnFileProgressChanged(DownloadProgressChangedEventArgs e)
+    {
+        IsProgressBarIndeterminate = false;
+        CurrentProgress = e.Percentage;
+        CurrentStatus = "Downloading " + e.ProgressText + " (" + e.BytesReceived + "/" + e.TotalBytesToReceive + ") " + e.Percentage + "%";
     }
     /// <summary>
     /// Deletes the content of a directory and all Subdirectories.
@@ -345,16 +351,19 @@ public class UpdateManager
         IsProgressBarIndeterminate = true;
         if (!Directory.Exists(directory))
         {
+            Console.WriteLine($"Directory {directory} does not exist! Creating Directory {directory}");
             Directory.CreateDirectory(directory);
         }
         else
         {
             foreach (string file in Directory.EnumerateFiles(directory))
             {
+                Console.WriteLine($"File {file} will be deleted!");
                 new FileInfo(file).Delete();
             }
             foreach (string subDir in Directory.EnumerateDirectories(directory))
             {
+                Console.WriteLine($"Sub-Directory {subDir} will be deleted!");
                 CleanUpDirectory(subDir);
             }
         }
@@ -377,91 +386,5 @@ public class UpdateManager
             Console.WriteLine($"Error: {ex.Message}");
             return null;
         }
-    }
-    
-    /// <summary>
-    /// Downloads a file form a web-path to a specific location on the device
-    /// </summary>
-    /// <param name="baseUrl">The download Url without the file extension.</param>
-    /// <param name="fileName">The Filename which should be downloaded.</param>
-    /// <param name="destination">The Destination folder</param>
-    /// <param name="progressText">The Info, which will be placed between the word Download and the download percentage</param>
-    /// <returns>true when the file was successfully downloaded.</returns>
-    private async Task<bool> DownloadFileWithProgress(string baseUrl, string fileName, string destination, string progressText)
-    {
-        try
-        {
-            await DownloadFileWithProgressUnsafe(baseUrl, fileName, destination, progressText);   
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-            return false;
-        }
-    }
-    /// <summary>
-    /// <c>Unsafe!!! can throw exceptions</c>
-    /// Downloads a file form a web-path to a specific location on the device
-    /// </summary>
-    /// <param name="baseUrl">The download Url without the file extension.</param>
-    /// <param name="fileName">The Filename which should be downloaded.</param>
-    /// <param name="destination">The Destination folder</param>
-    /// <param name="progressText">The Info, which will be placed between the word Download and the download percentage</param>
-    private async Task DownloadFileWithProgressUnsafe(string baseUrl, string fileName, string destination,
-        string progressText)
-    {
-        HttpClient client = new HttpClient();
-        HttpResponseMessage response =
-            await client.GetAsync(baseUrl + "/" + fileName, HttpCompletionOption.ResponseHeadersRead);
-        response.EnsureSuccessStatusCode();
-        long? totalBytes = response.Content.Headers.ContentLength;
-        Stream contentStream = await response.Content.ReadAsStreamAsync(),
-            fileStream = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true);
-        var buffer = new byte[8192];
-        long totalBytesRead = 0;
-        int bytesRead;
-        while ((bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-        {
-            await fileStream.WriteAsync(buffer, 0, bytesRead);
-            totalBytesRead += bytesRead;
-
-            if (totalBytes.HasValue)
-            {
-                CurrentProgress = (int)((double)totalBytesRead / totalBytes.Value * 100);
-                CurrentStatus = "Downloading " + progressText + "(" + totalBytesRead + "/" + totalBytes.Value + ")";
-            }
-        }
-    }
-
-    /// <summary>
-    /// Helper method for executing bash commands
-    /// </summary>
-    /// <param name="command"></param>
-    /// <param name="error"></param>
-    /// <returns></returns>
-    private string? ExecuteCommand(string command, out string error)
-    {
-        // Create a new process
-        Process process = new Process
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                FileName = "/bin/bash", // Use bash to execute the command
-                Arguments = $"-c \"{command}\"", // Pass the command as an argument
-                RedirectStandardOutput = true, // Capture the output
-                RedirectStandardError = true,  // Capture errors
-                UseShellExecute = false,       
-                CreateNoWindow = true,       
-            }
-        };
-        
-        process.Start();
-        string output = process.StandardOutput.ReadToEnd();
-        error = process.StandardError.ReadToEnd();
-
-        // Wait for the process to exit
-        process.WaitForExit();
-        return output;
     }
 }
