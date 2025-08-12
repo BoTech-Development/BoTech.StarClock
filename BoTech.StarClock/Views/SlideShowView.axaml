@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              xmlns:vm="clr-namespace:BoTech.StarClock.ViewModels"
+             xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="480"
              x:Class="BoTech.StarClock.Views.SlideShowView"
              Width="800"
@@ -14,30 +15,36 @@
     <Design.DataContext>
         <vm:SlideShowViewModel/>
     </Design.DataContext>
-    <RelativePanel>
-        <Carousel x:Name="ContentCarousel" 
-                  MinWidth="800"
-                  MinHeight="480"
-                  Items=""
-                  Theme="{DynamicResource FullCarousel}"
-                  ItemsSource="{Binding Pages}"
-                  Classes.Dot="True"
-                  Classes.Center="True">
+
+        <RelativePanel>
+            <Carousel x:Name="ContentCarousel" 
+                      MinWidth="800"
+                      MinHeight="480"
+                      Items=""
+                      Theme="{DynamicResource FullCarousel}"
+                      ItemsSource="{Binding Pages}"
+                      Classes.Dot="True"
+                      Classes.Center="True">
          
-        </Carousel>
-        <StackPanel RelativePanel.AlignBottomWith="ContentCarousel" 
-                    Orientation="Horizontal">
-            <Button Command="{Binding CheckForUpdatesCommand}">
-                <avalonia:MaterialIcon Kind="Update" />
-            </Button>
-            <StackPanel Orientation="Vertical">
-                <TextBlock Text="{Binding CurrentStatus}" />
-                <ProgressBar Minimum="0" 
-                             Maximum="100" 
-                             Value="{Binding CurrentProgress}"
-                             IsIndeterminate="{Binding IsProgressBarIndeterminate}"/> 
+            </Carousel>
+            <StackPanel RelativePanel.AlignBottomWith="ContentCarousel" 
+                        Orientation="Horizontal">
+                <Button Command="{Binding CheckForUpdatesCommand}">
+                    <avalonia:MaterialIcon Kind="Update" />
+                </Button>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding CurrentStatus}" />
+                    <ProgressBar Minimum="0" 
+                                 Maximum="100" 
+                                 Value="{Binding CurrentProgress}"
+                                 IsIndeterminate="{Binding IsProgressBarIndeterminate}"/> 
+                </StackPanel>
+                <TextBlock VerticalAlignment="Center">v1.0.3</TextBlock>
+                <Button IsEnabled="{Binding !IsUpdating}"
+                        Command="{Binding ShutdownOrRestartCommand}">
+                    <avalonia:MaterialIcon Kind="Power" />
+                </Button>
             </StackPanel>
-            <TextBlock VerticalAlignment="Center">v1.0.3</TextBlock>
-        </StackPanel>
-    </RelativePanel>
+        </RelativePanel>
+
 </UserControl>

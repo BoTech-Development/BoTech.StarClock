@@ -1,0 +1,220 @@
+﻿using System;
+using System.Diagnostics;
+using System.Reactive;
+using System.Threading;
+using Avalonia.Media;
+using BoTech.StarClock.Helper;
+using Material.Icons;
+using ReactiveUI;
+
+namespace BoTech.StarClock.ViewModels.Dialogs;
+
+public class UpdateOsOrAppDialogModel : ViewModelBase
+{
+    private int _currentProgress;
+    /// <summary>
+    /// Current Percentage of the Progress Bar
+    /// </summary>
+    public int CurrentProgress
+    {
+        get =>  _currentProgress;
+        set => this.RaiseAndSetIfChanged(ref _currentProgress, value);
+    }
+    private string _currentStatus = String.Empty;
+    /// <summary>
+    /// The Content of the label above the progress bar
+    /// </summary>
+    public string CurrentStatus
+    {
+        get => _currentStatus;
+        set => this.RaiseAndSetIfChanged(ref _currentStatus, value);
+    }
+    private bool _isProgressBarIndeterminate = false;
+    /// <summary>
+    /// Animated Progress or based on percentage
+    /// </summary>
+    public bool IsProgressBarIndeterminate
+    {
+        get => _isProgressBarIndeterminate;
+        set => this.RaiseAndSetIfChanged(ref _isProgressBarIndeterminate, value);
+    }
+    private bool _isProgressVisible = false;
+    /// <summary>
+    /// Shows the two buttons or the Progress bar.
+    /// </summary>
+    public bool IsProgressVisible 
+    { 
+        get => _isProgressVisible; 
+        set => this.RaiseAndSetIfChanged(ref _isProgressVisible, value); 
+    }
+    private bool _isConsoleOutputVisible = false;
+    /// <summary>
+    /// Animated Progress or based on percentage
+    /// </summary>
+    public bool IsConsoleOutputVisible
+    {
+        get => _isConsoleOutputVisible;
+        set => this.RaiseAndSetIfChanged(ref _isConsoleOutputVisible, value);
+    }
+    private string _consoleOutput = String.Empty;
+
+    /// <summary>
+    /// The Content of the label above the progress bar
+    /// </summary>
+    public string ConsoleOutput
+    {
+        get => _consoleOutput;
+        set => this.RaiseAndSetIfChanged(ref _consoleOutput, value);
+    }
+
+    public ReactiveCommand<Unit, Unit> UpdateAppCommand { get; }
+    public ReactiveCommand<Unit, Unit> UpdateOsCommand { get; }
+    
+    public GenericDialogViewModel DialogViewModel { get; set; }
+    public UpdateOsOrAppDialogModel(GenericDialogViewModel dialogViewModel)
+    {
+        DialogViewModel = dialogViewModel;
+        UpdateManager um = new UpdateManager();
+        um.OnCurrentStatusChanged += OnOnCurrentStatusChanged;
+       // um.DeleteOldInstalledVersions();
+        //CheckForUpdatesCommand = ReactiveCommand.Create(CheckForUpdates);
+        // UpdateNowNotificationCommand = ReactiveCommand.Create(() => {_updateManager.InstallUpdates();});
+        UpdateAppCommand = ReactiveCommand.Create(() =>
+        {
+            IsProgressVisible = true;
+            Thread updateThread = new Thread(() =>
+            {
+                if (um.CheckForUpdate())
+                {
+                    if (!um.IsNextUpdateUnstable)
+                    {
+                        if (!um.InstallUpdate())
+                        {
+                            CurrentStatus = "Error by downloading or installing update!";
+                            IsProgressBarIndeterminate = false;
+                            CurrentProgress = 100;
+                            DialogViewModel.Icon = MaterialIconKind.AlertCircleOutline;
+                            DialogViewModel.IconColor = Brushes.Red;
+                        }
+                        else
+                        {
+                            CurrentStatus = "Please restart to activate the update. Click ok to restart or cancel to do it later.";
+                            IsProgressBarIndeterminate = false;
+                            CurrentProgress = 100;
+                            DialogViewModel.Icon = MaterialIconKind.CheckCircleOutline;
+                            DialogViewModel.IconColor = Brushes.Green;
+                        }
+                    }
+                    else
+                    {
+                        // TODO: Ask the user if he wants to perform the update
+                        if (!um.InstallUpdate())
+                        {
+                            CurrentStatus = "Error by downloading or installing update!";
+                            IsProgressBarIndeterminate = false;
+                            CurrentProgress = 100;
+                            DialogViewModel.Icon = MaterialIconKind.AlertCircleOutline;
+                            DialogViewModel.IconColor = Brushes.Red;
+                        }
+                        else
+                        {
+                            CurrentStatus = "Please restart to activate the update. Click ok to restart or cancel to do it later.";
+                            IsProgressBarIndeterminate = false;
+                            CurrentProgress = 100;
+                            DialogViewModel.Icon = MaterialIconKind.CheckCircleOutline;
+                            DialogViewModel.IconColor = Brushes.Green;
+                        }
+                        
+                    }
+                }
+                else
+                {
+                    CurrentStatus = "No update available!";
+                    IsProgressBarIndeterminate = false;
+                    CurrentProgress = 100;
+                    DialogViewModel.Icon = MaterialIconKind.CheckCircleOutline;
+                    DialogViewModel.IconColor = Brushes.Green;
+                }
+            });
+            updateThread.Start();
+        });
+        UpdateOsCommand = ReactiveCommand.Create(() =>
+        {
+            SystemUpdater.UpdateLinux(this);
+        });
+    }
+    private void OnOnCurrentStatusChanged(UpdateManager updaterInstance, string currentStatus)
+    {
+        CurrentStatus = currentStatus;
+        CurrentProgress = updaterInstance.CurrentProgress;
+        IsProgressBarIndeterminate = updaterInstance.IsProgressBarIndeterminate;
+    }
+    private static class SystemUpdater
+    {
+        /// <summary>
+        /// Update linux
+        /// </summary>
+        public static void UpdateLinux(UpdateOsOrAppDialogModel model)
+        {
+            Process checkForUpdates = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "bash",
+                    Arguments = "-c \"sudo apt update\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+            Process installUpdates = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "bash",
+                    Arguments = "-c \"sudo apt upgrade -y\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+            Process autoremove = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "bash",
+                    Arguments = "-c \"sudo apt autoremove -y\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+            model.IsConsoleOutputVisible = true;
+            model.IsProgressBarIndeterminate = true;
+            model.CurrentStatus = "Checking for updates...";
+            checkForUpdates.Start();
+            checkForUpdates.OutputDataReceived += (sender, args) =>
+            {
+                model.CurrentStatus += args.Data;
+            };
+            checkForUpdates.WaitForExit();
+            model.CurrentStatus = "Installing updates...";
+            installUpdates.Start();
+            installUpdates.OutputDataReceived += (sender, args) => { model.CurrentStatus += args.Data; };
+            installUpdates.WaitForExit();
+            
+            
+            model.CurrentStatus = "Update(s) installed when there any updates are available.";
+            model.IsProgressBarIndeterminate = false;
+            model.CurrentProgress = 100;
+            model.DialogViewModel.Icon = MaterialIconKind.CheckCircleOutline;
+            model.DialogViewModel.IconColor = Brushes.Green;
+        }
+        
+  
+    }
+    
+}

@@ -7,7 +7,9 @@
         Title="BoTech.StarClock"
         Width="800"
         Height="480"
-        CanResize="False">
+        CanResize="False"
+        SystemDecorations="Full" 
+        WindowState="Maximized">
         <dialogHostAvalonia:DialogHost Identifier="MainDialogHost"
                                        DialogMargin="16"
                                        dialogHostAvalonia:DialogHostStyle.CornerRadius="8" 

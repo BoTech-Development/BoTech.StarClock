@@ -1,0 +1,36 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:vm="clr-namespace:BoTech.StarClock.ViewModels.Dialogs"
+             x:Class="BoTech.StarClock.Views.Dialogs.ShutdownOrRestartDialog"
+             x:DataType="vm:ShutdownOrRestartDialogModel">
+    <StackPanel>
+        <TextBlock Text="Please select or close:"
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Center"/>
+        <Button Command="{Binding ShutdownCommand}"
+                Margin="5">
+            <StackPanel Orientation="Horizontal">
+                <avalonia:MaterialIcon Kind="Power"
+                                       Width="32"
+                                       Height="32"/>
+                <TextBlock Text="Shutdown the OS + App"
+                           VerticalAlignment="Center"
+                           Margin="10,0,0,0"/>
+            </StackPanel>
+        </Button>
+        <Button Command="{Binding RestartCommand}"
+                Margin="5">
+            <StackPanel Orientation="Horizontal">
+                <avalonia:MaterialIcon Kind="Restart"
+                                       Width="32"
+                                       Height="32"/>
+                <TextBlock Text="Restart the OS + App"
+                           VerticalAlignment="Center"
+                           Margin="10,0,0,0"/>
+            </StackPanel>
+        </Button>
+    </StackPanel>
+</UserControl>

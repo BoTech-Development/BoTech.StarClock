@@ -1,0 +1,56 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:BoTech.StarClock.ViewModels.Dialogs"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+            
+             x:Class="BoTech.StarClock.Views.Dialogs.UpdateOsOrAppDialog"
+             x:DataType="vm:UpdateOsOrAppDialogModel">
+    <StackPanel>
+        <StackPanel IsVisible="{Binding !IsProgressVisible}">
+            <TextBlock Text="Please select or close:"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Center"/>
+            <Button Command="{Binding UpdateAppCommand}"
+                    Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <avalonia:MaterialIcon Kind="Update"
+                                           Width="32"
+                                           Height="32"/>
+                    <TextBlock Text="Update the App"
+                               VerticalAlignment="Center"
+                               Margin="10,0,0,0"/>
+                </StackPanel>
+            </Button>
+            <Button  Command="{Binding UpdateOsCommand}"
+                     Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <avalonia:MaterialIcon Kind="Update"
+                                           Width="32"
+                                           Height="32"/>
+                    <TextBlock Text="Update the Os"
+                               VerticalAlignment="Center"
+                               Margin="10,0,0,0"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+        <StackPanel Orientation="Vertical" 
+                    IsVisible="{Binding IsProgressVisible}" >
+            <TextBlock Text="{Binding CurrentStatus}" />
+            <ProgressBar Minimum="0" 
+                         Maximum="100" 
+                         Value="{Binding CurrentProgress}"
+                         IsIndeterminate="{Binding IsProgressBarIndeterminate}"/> 
+            <Border Background="#111111" Width="300" Height="300">
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBlock IsVisible="{Binding IsConsoleOutputVisible}" 
+                                   Foreground="White"
+                                   Text="{Binding ConsoleOutput}"></TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
