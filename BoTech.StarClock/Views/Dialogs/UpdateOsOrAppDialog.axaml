@@ -42,15 +42,6 @@
                          Maximum="100" 
                          Value="{Binding CurrentProgress}"
                          IsIndeterminate="{Binding IsProgressBarIndeterminate}"/> 
-            <Border Background="#111111" Width="300" Height="300">
-                <ScrollViewer>
-                    <StackPanel>
-                        <TextBlock IsVisible="{Binding IsConsoleOutputVisible}" 
-                                   Foreground="White"
-                                   Text="{Binding ConsoleOutput}"></TextBlock>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
         </StackPanel>
     </StackPanel>
 </UserControl>

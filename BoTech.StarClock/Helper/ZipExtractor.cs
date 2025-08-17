@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -27,7 +28,7 @@ public class ZipExtractor
         }
     }
     /// <summary>
-    /// This Method check wheter all entries have the same parent folder.
+    /// This Method check whether all entries have the same parent folder.
     /// </summary>
     /// <param name="entries"></param>
     /// <returns>It returns the name of the Parent folder or string.Empty when not all entries have the same parent folder.</returns>
@@ -51,7 +52,13 @@ public class ZipExtractor
         }
         return currentParentFolder;
     }
-
+    /// <summary>
+    /// Extracts all entries of the zip file to the extract path. This method does not create the most parent folder when the parentEntryFolderToRemove var is set.
+    /// </summary>
+    /// <param name="archive"></param>
+    /// <param name="extractPath"></param>
+    /// <param name="parentEntryFolderToRemove"></param>
+    /// <param name="progressText"></param>
     private void ExtractZipEntriesWithProgress(ZipArchive archive, string extractPath, string? parentEntryFolderToRemove, string progressText)
     {
         int totalEntries = archive.Entries.Count;
@@ -66,6 +73,7 @@ public class ZipExtractor
             }
             else
             {
+                Console.WriteLine("Extracting {0} to {1}",  entry.FullName, extractPath + entry.FullName.Replace(parentEntryFolderToRemove + "/", ""));
                 Directory.CreateDirectory(Path.GetDirectoryName(extractPath + entry.FullName.Replace(parentEntryFolderToRemove + "/", "")));
                 entry.ExtractToFile(extractPath + entry.FullName.Replace(parentEntryFolderToRemove + "/", ""), overwrite: true);
             }

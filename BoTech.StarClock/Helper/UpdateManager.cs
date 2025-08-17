@@ -109,10 +109,10 @@ public class UpdateManager
         CurrentStatus = "Deleting old installation do not shutdown!!!";
         try
         {
-            List<string> oldInstallations = Directory.EnumerateDirectories("/home/rpi/botech/bot.sc/").ToList();
+            List<string> oldInstallations = Directory.EnumerateDirectories("/home/rpi/Desktop/botech/bot.sc/").ToList();
             foreach (string installation in oldInstallations)
             {
-                string versionString = installation.Replace("/home/rpi/botech/bot.sc/", "").Replace("/", "");
+                string versionString = installation.Replace("/home/rpi/Desktop/botech/bot.sc/", "").Replace("/", "");
                 if (!versionString.Equals(ThisVersion.GetVersionStringWithoutDateTime()))
                 {
                     Directory.Delete(installation, true);
@@ -319,8 +319,10 @@ public class UpdateManager
             // Cleanup the update Directory => normally the app does it after the update, but it is saver to do it twice.
             CleanUpDirectory(UpdatePath);
             // Now let's download the update file to a temp directory
+            Console.WriteLine("Downloading {0} to {1}", updateAsset.Name, UpdatePath + "/" + updateAsset.Name);
             if (downloader.DownloadFileWithProgress(updateAsset.BrowserDownloadUrl, UpdatePath + "/" + updateAsset.Name)) //DownloadFileWithProgress(updateAsset.BrowserDownloadUrl.Replace(updateAsset.Name, ""), updateAsset.Name, UpdatePath, "Binaries").Result)
             {
+                Console.WriteLine("Downloading {0} to {1}", autostartAsset.Name, UpdatePath + "/" + autostartAsset.Name);
                 // Download the AutoStart.sh File
                 if ( downloader.DownloadFileWithProgress(autostartAsset.BrowserDownloadUrl, UpdatePath + "/" + autostartAsset.Name)) //DownloadFileWithProgress(autostartAsset.BrowserDownloadUrl.Replace(autostartAsset.Name, ""), autostartAsset.Name, UpdatePath, "AutoStart script").Result)
                 {

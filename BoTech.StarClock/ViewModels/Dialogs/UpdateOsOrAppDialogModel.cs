@@ -47,25 +47,7 @@ public class UpdateOsOrAppDialogModel : ViewModelBase
         get => _isProgressVisible; 
         set => this.RaiseAndSetIfChanged(ref _isProgressVisible, value); 
     }
-    private bool _isConsoleOutputVisible = false;
-    /// <summary>
-    /// Animated Progress or based on percentage
-    /// </summary>
-    public bool IsConsoleOutputVisible
-    {
-        get => _isConsoleOutputVisible;
-        set => this.RaiseAndSetIfChanged(ref _isConsoleOutputVisible, value);
-    }
-    private string _consoleOutput = String.Empty;
 
-    /// <summary>
-    /// The Content of the label above the progress bar
-    /// </summary>
-    public string ConsoleOutput
-    {
-        get => _consoleOutput;
-        set => this.RaiseAndSetIfChanged(ref _consoleOutput, value);
-    }
 
     public ReactiveCommand<Unit, Unit> UpdateAppCommand { get; }
     public ReactiveCommand<Unit, Unit> UpdateOsCommand { get; }
@@ -152,60 +134,29 @@ public class UpdateOsOrAppDialogModel : ViewModelBase
     private static class SystemUpdater
     {
         /// <summary>
-        /// Update linux
+        /// Upgrade all packages hosted under apt and removes all packages that became useless after the upgrade
         /// </summary>
         public static void UpdateLinux(UpdateOsOrAppDialogModel model)
         {
-            Process checkForUpdates = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "bash",
-                    Arguments = "-c \"sudo apt update\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
-            };
-            Process installUpdates = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "bash",
-                    Arguments = "-c \"sudo apt upgrade -y\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
-            };
-            Process autoremove = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "bash",
-                    Arguments = "-c \"sudo apt autoremove -y\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                }
-            };
-            model.IsConsoleOutputVisible = true;
+            model.IsProgressVisible = true;
             model.IsProgressBarIndeterminate = true;
             model.CurrentStatus = "Checking for updates...";
-            checkForUpdates.Start();
-            checkForUpdates.OutputDataReceived += (sender, args) =>
-            {
-                model.CurrentStatus += args.Data;
-            };
-            checkForUpdates.WaitForExit();
-            model.CurrentStatus = "Installing updates...";
-            installUpdates.Start();
-            installUpdates.OutputDataReceived += (sender, args) => { model.CurrentStatus += args.Data; };
-            installUpdates.WaitForExit();
             
+            Process? checkForUpdates = TerminalRunner.StartTerminal("sudo apt update");
+            if(checkForUpdates != null)
+                checkForUpdates.WaitForExit();
+            
+            model.CurrentStatus = "Installing updates...";
+            
+            Process? installUpdates = TerminalRunner.StartTerminal("sudo apt upgrade -y");
+            if(installUpdates != null)
+                installUpdates.WaitForExit();
+            
+            model.CurrentStatus = "Removing useless packages...";
+            
+            Process? autoremove = TerminalRunner.StartTerminal("sudo apt autoremove -y");
+            if(autoremove != null)
+                autoremove.WaitForExit();
             
             model.CurrentStatus = "Update(s) installed when there any updates are available.";
             model.IsProgressBarIndeterminate = false;
@@ -213,8 +164,5 @@ public class UpdateOsOrAppDialogModel : ViewModelBase
             model.DialogViewModel.Icon = MaterialIconKind.CheckCircleOutline;
             model.DialogViewModel.IconColor = Brushes.Green;
         }
-        
-  
     }
-    
 }
