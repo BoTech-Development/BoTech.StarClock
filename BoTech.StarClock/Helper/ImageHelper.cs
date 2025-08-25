@@ -14,6 +14,11 @@ public static class ImageHelper
         return new Bitmap(AssetLoader.Open(resourceUri));
     }
 
+    public static Bitmap LoadFromDeviceStorage(string filename)
+    {
+        return new Bitmap(filename);
+    }
+
     public static async Task<Bitmap?> LoadFromWeb(Uri url)
     {
         using var httpClient = new HttpClient();

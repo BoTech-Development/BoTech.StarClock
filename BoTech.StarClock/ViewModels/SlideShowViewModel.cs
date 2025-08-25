@@ -82,6 +82,10 @@ public class SlideShowViewModel : ViewModelBase
         {
             DataContext = new ClockPageViewModel()
         });
+        Pages.Add(new ConnectToMobilePageView()
+        {
+            DataContext = new ConnectToMobilePageViewModel()
+        });
         Pages.Add(new TimerPageView()
         {
             DataContext = new TimerPageViewModel()

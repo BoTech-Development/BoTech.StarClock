@@ -1,0 +1,6 @@
+@BoTech.StarClock.Api_HostAddress = http://localhost:5230
+
+GET {{BoTech.StarClock.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

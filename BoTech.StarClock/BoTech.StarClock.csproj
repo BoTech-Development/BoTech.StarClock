@@ -12,6 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia"/>
+        <PackageReference Include="Avalonia.Labs.Qr" />
         <PackageReference Include="Avalonia.LinuxFramebuffer" />
         <PackageReference Include="Avalonia.Themes.Fluent"/>
         <PackageReference Include="Avalonia.Fonts.Inter"/>
@@ -39,5 +40,9 @@
 
     <ItemGroup>
       <Folder Include="Theme\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BoTech.StarClock.Api\BoTech.StarClock.Api.csproj" />
     </ItemGroup>
 </Project>

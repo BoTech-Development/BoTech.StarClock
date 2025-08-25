@@ -1,3 +1,5 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -31,5 +33,11 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+        // Start Backend api asynchronously
+        Thread apiThread = new Thread(() =>
+        {
+            BoTech.StarClock.Api.Program.Main();
+        });
+        apiThread.Start();
     }
 }
