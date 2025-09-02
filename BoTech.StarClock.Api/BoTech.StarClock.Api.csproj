@@ -13,4 +13,12 @@
       <PackageReference Include="Swashbuckle.AspNetCore" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\BoTech.StarClock.Api.SharedModels\BoTech.StarClock.Api.SharedModels.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
 </Project>

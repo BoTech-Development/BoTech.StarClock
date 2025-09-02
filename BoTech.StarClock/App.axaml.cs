@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using BoTech.StarClock.Helper;
 using BoTech.StarClock.ViewModels;
 using BoTech.StarClock.Views;
 
@@ -36,7 +37,7 @@ public partial class App : Application
         // Start Backend api asynchronously
         Thread apiThread = new Thread(() =>
         {
-            BoTech.StarClock.Api.Program.Main();
+            BoTech.StarClock.Api.Program.Main(UpdateManager.ThisVersion.GetVersionString());
         });
         apiThread.Start();
     }

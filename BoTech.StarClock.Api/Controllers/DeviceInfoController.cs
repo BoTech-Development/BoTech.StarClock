@@ -1,4 +1,5 @@
-﻿using BoTech.StarClock.Helper;
+﻿using BoTech.StarClock.Api.SharedModels;
+using BoTech.StarClock.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -26,45 +27,15 @@ public class DeviceInfoController : ControllerBase
     [HttpGet("GetDeviceName")]
     public ActionResult<string> GetDeviceName() => Ok(_deviceInfo.DeviceName);
     
-    [HttpPost("SetDeviceName")]
-    public ActionResult<bool> SetDeviceName(string deviceName)
+    [HttpPost]
+    [Route("SetDeviceName")]
+    public ActionResult<bool> SetDeviceName( [FromQuery] string deviceName)
     {
         _deviceInfo.DeviceName = deviceName;
         _deviceInfo.SaveChanges();
         return Ok(_deviceInfo.DeviceName);
     }
+    [HttpGet("GetDeviceAppVersion")]
+    public ActionResult<string> GetDeviceAppVersion() => Ok(Program.VersionString);
 
-    private class DeviceInfo
-    {
-        public string DeviceName { get; set; } = string.Empty;
-        
-        /// <summary>
-        /// Current file path to save this object to.
-        /// </summary>
-        public static string CurrentFileName { get; private set; } = string.Empty;
-        /// <summary>
-        /// Loads this object from a specific file location.
-        /// </summary>
-        /// <param name="fileName">File path of the .json file.</param>
-        /// <returns></returns>
-        public static DeviceInfo? FromJsonFile(string fileName)
-        {
-            CurrentFileName = fileName;
-            if (System.IO.File.Exists(fileName))
-            {
-                return JsonConvert.DeserializeObject<DeviceInfo>(System.IO.File.ReadAllText(fileName));
-            }
-            return null;
-        }
-        /// <summary>
-        /// Saves this object to the specific File location in json format.
-        /// </summary>
-        public void SaveChanges()
-        {
-            string json = JsonConvert.SerializeObject(this);
-            if(!System.IO.File.Exists(CurrentFileName)) 
-                System.IO.File.Create(CurrentFileName).Dispose();
-            System.IO.File.WriteAllText(CurrentFileName, json);
-        }
-    }
 }

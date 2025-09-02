@@ -30,11 +30,12 @@ public class SystemPaths
             return ReturnPathAndCreate(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData,
                 Environment.SpecialFolderOption.Create) + "/botech/bot.sc/AppData/" + extensionToPath);
         }
-        else
+        else if(Environment.OSVersion.Platform == PlatformID.Unix)
         {
             return ReturnPathAndCreate(Environment.GetFolderPath(Environment.SpecialFolder.Desktop,
                 Environment.SpecialFolderOption.Create) + "/botech/bot.sc/AppData/" + extensionToPath);
         }
+        return string.Empty;
     }
 
     private static string ReturnPathAndCreate(string path)

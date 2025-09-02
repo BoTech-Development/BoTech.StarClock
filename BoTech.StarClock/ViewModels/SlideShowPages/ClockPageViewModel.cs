@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using System.Timers;
 using Avalonia.Media.Imaging;
 using BoTech.StarClock.Api.Controllers;
-using BoTech.StarClock.Api.Models.ImageSlideshow;
 using BoTech.StarClock.Api.Share;
+using BoTech.StarClock.Api.SharedModels.ImageSlideshow;
 using BoTech.StarClock.Helper;
 using ReactiveUI;
 

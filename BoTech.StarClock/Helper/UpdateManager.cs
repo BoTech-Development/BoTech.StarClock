@@ -38,7 +38,7 @@ public class UpdateManager
     /// <summary>
     /// The hardcoded Version Number of this Product
     /// </summary>
-    public readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,3))
+    public static readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,4))
     {
         IsAlpha = true
     };

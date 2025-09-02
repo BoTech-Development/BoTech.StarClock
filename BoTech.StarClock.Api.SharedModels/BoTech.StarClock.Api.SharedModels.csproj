@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Version>1.0.1</Version>
+        <Copyright>BoTech.dev All Rights Reserved.</Copyright>
+        <PackageProjectUrl>https://github.com/BoTech-Development/BoTech.StarClock</PackageProjectUrl>
+        <PackageIcon>BoTech-Avatar.png</PackageIcon>
+        <Description>An Internal package which contains all data models which are transferred between the api and the mobile app.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="BoTech-Avatar.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
+    </ItemGroup>
+
+</Project>

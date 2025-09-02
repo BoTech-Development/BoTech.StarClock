@@ -1,5 +1,5 @@
-﻿using BoTech.StarClock.Api.Models.ImageSlideshow;
-using BoTech.StarClock.Api.Share;
+﻿using BoTech.StarClock.Api.Share;
+using BoTech.StarClock.Api.SharedModels.ImageSlideshow;
 using BoTech.StarClock.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

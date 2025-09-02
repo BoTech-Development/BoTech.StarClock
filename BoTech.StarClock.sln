@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoTech.StarClock.Elevator",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoTech.StarClock.Api", "BoTech.StarClock.Api\BoTech.StarClock.Api.csproj", "{9FD09BCA-FF7B-45AA-B5DF-63C342E158ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoTech.StarClock.Api.SharedModels", "BoTech.StarClock.Api.SharedModels\BoTech.StarClock.Api.SharedModels.csproj", "{361AA4B6-F8AA-40D8-9CC2-1F6404DAB7C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{9FD09BCA-FF7B-45AA-B5DF-63C342E158ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FD09BCA-FF7B-45AA-B5DF-63C342E158ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FD09BCA-FF7B-45AA-B5DF-63C342E158ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{361AA4B6-F8AA-40D8-9CC2-1F6404DAB7C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{361AA4B6-F8AA-40D8-9CC2-1F6404DAB7C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{361AA4B6-F8AA-40D8-9CC2-1F6404DAB7C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{361AA4B6-F8AA-40D8-9CC2-1F6404DAB7C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
