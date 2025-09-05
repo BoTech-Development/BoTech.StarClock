@@ -57,7 +57,7 @@ public class SlideShowViewModel : ViewModelBase
     {
         UpdateManager um = new UpdateManager();
         um.OnCurrentStatusChanged += OnOnCurrentStatusChanged;
-        um.DeleteOldInstalledVersions();
+        //um.DeleteOldInstalledVersions();
         //CheckForUpdatesCommand = ReactiveCommand.Create(CheckForUpdates);
        // UpdateNowNotificationCommand = ReactiveCommand.Create(() => {_updateManager.InstallUpdates();});
         CheckForUpdatesCommand = ReactiveCommand.Create(() =>

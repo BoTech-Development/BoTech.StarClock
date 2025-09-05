@@ -5,15 +5,21 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <Version>1.0.1</Version>
+        <Version>1.0.3-alpha</Version>
         <Copyright>BoTech.dev All Rights Reserved.</Copyright>
         <PackageProjectUrl>https://github.com/BoTech-Development/BoTech.StarClock</PackageProjectUrl>
         <PackageIcon>BoTech-Avatar.png</PackageIcon>
         <Description>An Internal package which contains all data models which are transferred between the api and the mobile app.</Description>
+        <PackageReleaseNotes>Fixed scale function of PreviewImage</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Avalonia" />
       <PackageReference Include="Newtonsoft.Json" />
+      <PackageReference Include="SixLabors.ImageSharp" />
+      <PackageReference Include="SkiaSharp" />
+      <PackageReference Include="SkiaSharp.Views.Desktop.Common" />
+      <PackageReference Include="System.Drawing.Common" />
     </ItemGroup>
 
     <ItemGroup>

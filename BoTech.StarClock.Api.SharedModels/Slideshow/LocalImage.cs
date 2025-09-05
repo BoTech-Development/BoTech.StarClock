@@ -1,4 +1,4 @@
-﻿namespace BoTech.StarClock.Api.SharedModels.ImageSlideshow;
+﻿namespace BoTech.StarClock.Api.SharedModels.Slideshow;
 
 /// <summary>
 /// A wrapper class which stores info about the stored Image.

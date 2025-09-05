@@ -1,4 +1,4 @@
-﻿using BoTech.StarClock.Api.SharedModels.ImageSlideshow;
+﻿using BoTech.StarClock.Api.SharedModels.Slideshow;
 
 namespace BoTech.StarClock.Api.Share;
 

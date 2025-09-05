@@ -4,7 +4,7 @@ using System.Timers;
 using Avalonia.Media.Imaging;
 using BoTech.StarClock.Api.Controllers;
 using BoTech.StarClock.Api.Share;
-using BoTech.StarClock.Api.SharedModels.ImageSlideshow;
+using BoTech.StarClock.Api.SharedModels.Slideshow;
 using BoTech.StarClock.Helper;
 using ReactiveUI;
 
@@ -65,7 +65,7 @@ public class ClockPageViewModel : ViewModelBase
 
     private void SlideshowUpdateTimerOnElapsed(object? sender, ElapsedEventArgs e)
     {
-        if (_slideshow != null)
+        if (_slideshow != null && _slideshow.Images.Count > 0)
         {
             _currentSlideshowIndex++;
             if (_currentSlideshowIndex >= _slideshow.Images.Count) _currentSlideshowIndex = 0;

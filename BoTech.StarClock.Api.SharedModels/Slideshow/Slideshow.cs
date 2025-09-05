@@ -1,5 +1,5 @@
 ﻿
-namespace BoTech.StarClock.Api.SharedModels.ImageSlideshow;
+namespace BoTech.StarClock.Api.SharedModels.Slideshow;
 
 public class Slideshow
 {
