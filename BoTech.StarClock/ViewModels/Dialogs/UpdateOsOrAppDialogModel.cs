@@ -142,21 +142,22 @@ public class UpdateOsOrAppDialogModel : ViewModelBase
             model.IsProgressBarIndeterminate = true;
             model.CurrentStatus = "Checking for updates...";
             
-            Process? checkForUpdates = TerminalRunner.StartTerminal("sudo apt update");
-            if(checkForUpdates != null)
-                checkForUpdates.WaitForExit();
+            TerminalRunner.StartTerminal("sudo apt update");
+            
             
             model.CurrentStatus = "Installing updates...";
+            Console.WriteLine("Finished Checking for Updates...");
             
-            Process? installUpdates = TerminalRunner.StartTerminal("sudo apt upgrade -y");
-            if(installUpdates != null)
-                installUpdates.WaitForExit();
-            
+           TerminalRunner.StartTerminal("sudo apt upgrade -y");
+
+
             model.CurrentStatus = "Removing useless packages...";
+            Console.WriteLine("Finished upgrading packages...");
             
-            Process? autoremove = TerminalRunner.StartTerminal("sudo apt autoremove -y");
-            if(autoremove != null)
-                autoremove.WaitForExit();
+             TerminalRunner.StartTerminal("sudo apt autoremove -y");
+
+            
+            Console.WriteLine("Finished autoremove...");
             
             model.CurrentStatus = "Update(s) installed when there any updates are available.";
             model.IsProgressBarIndeterminate = false;
