@@ -38,10 +38,10 @@ public class UpdateManager
     /// <summary>
     /// The hardcoded Version Number of this Product
     /// </summary>
-    public static readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,5))
+    public static readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,7))
     {
         IsAlpha = true,
-        Published = new DateTime(2025, 9, 5, 21, 5, 0)
+        Published = new DateTime(2025, 9, 6, 12, 30, 0)
     };
     public VersionedGitRelease NextUpdate { get; private set; }
     public bool IsNextUpdateUnstable { get; private set; } = false;
@@ -110,13 +110,13 @@ public class UpdateManager
         CurrentStatus = "Deleting old installation do not shutdown!!!";
         try
         {
-            List<string> oldInstallations = Directory.EnumerateDirectories("/home/rpi/Desktop/botech/bot.sc/").ToList();
-            foreach (string installation in oldInstallations)
+            List<string> installationDirectories = Directory.EnumerateDirectories("/home/rpi/Desktop/botech/bot.sc/").ToList();
+            foreach (string installationDirectory in installationDirectories)
             {
-                string versionString = installation.Replace("/home/rpi/Desktop/botech/bot.sc/", "").Replace("/", "");
-                if (!versionString.Equals(ThisVersion.GetVersionStringWithoutDateTime()))
+                string dirName = installationDirectory.Replace("/home/rpi/Desktop/botech/bot.sc/", "").Replace("/", "");
+                if (!dirName.Equals(ThisVersion.GetVersionStringWithoutDateTime()) && !dirName.Equals("AppData"))
                 {
-                    Directory.Delete(installation, true);
+                    Directory.Delete(installationDirectory, true);
                 }
             }
         }
