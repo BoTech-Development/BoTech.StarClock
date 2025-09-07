@@ -6,13 +6,7 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="BoTech.StarClock"
         Width="800"
-        Height="480"
-        CanResize="False"
-        SystemDecorations="Full" 
-        WindowState="Maximized"
-        Topmost="True">
-    <!--More Info for Window definition here: https://github.com/AvaloniaUI/Avalonia/issues/2759
-    https://forums.raspberrypi.com/viewtopic.php?t=358654-->
+        Height="480">
     <dialogHostAvalonia:DialogHost Identifier="MainDialogHost"
                                    DialogMargin="16"
                                    dialogHostAvalonia:DialogHostStyle.CornerRadius="8" 

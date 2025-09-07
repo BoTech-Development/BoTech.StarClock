@@ -50,7 +50,10 @@ public class SlideShowViewModel : ViewModelBase
         get =>  _isUpdating; 
         set =>  this.RaiseAndSetIfChanged(ref _isUpdating, value);
     }
-    
+    /// <summary>
+    /// The Version of this app.
+    /// </summary>
+    public string AppVersion {get; set;} = UpdateManager.ThisVersion.ToString();
     public ReactiveCommand<Unit, Unit> ShutdownOrRestartCommand { get; }
     public ReactiveCommand<Unit, Unit> CheckForUpdatesCommand { get; }
     public SlideShowViewModel()

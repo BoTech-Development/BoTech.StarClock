@@ -38,10 +38,10 @@ public class UpdateManager
     /// <summary>
     /// The hardcoded Version Number of this Product
     /// </summary>
-    public static readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,7))
+    public static readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,10))
     {
         IsAlpha = true,
-        Published = new DateTime(2025, 9, 6, 12, 30, 0)
+        Published = new DateTime(2025, 9, 7, 12, 00, 0)
     };
     public VersionedGitRelease NextUpdate { get; private set; }
     public bool IsNextUpdateUnstable { get; private set; } = false;

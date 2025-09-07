@@ -39,7 +39,8 @@
                                  Value="{Binding CurrentProgress}"
                                  IsIndeterminate="{Binding IsProgressBarIndeterminate}"/> 
                 </StackPanel>
-                <TextBlock VerticalAlignment="Center">v1.0.3</TextBlock>
+                <TextBlock VerticalAlignment="Center"
+                           Text="{Binding AppVersion}"/>
                 <Button IsEnabled="{Binding !IsUpdating}"
                         Command="{Binding ShutdownOrRestartCommand}">
                     <avalonia:MaterialIcon Kind="Power" />
