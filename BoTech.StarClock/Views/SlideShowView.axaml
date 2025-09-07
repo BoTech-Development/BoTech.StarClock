@@ -27,25 +27,29 @@
                       Classes.Center="True">
          
             </Carousel>
-            <StackPanel RelativePanel.AlignBottomWith="ContentCarousel" 
-                        Orientation="Horizontal">
-                <Button Command="{Binding CheckForUpdatesCommand}">
-                    <avalonia:MaterialIcon Kind="Update" />
-                </Button>
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="{Binding CurrentStatus}" />
-                    <ProgressBar Minimum="0" 
-                                 Maximum="100" 
-                                 Value="{Binding CurrentProgress}"
-                                 IsIndeterminate="{Binding IsProgressBarIndeterminate}"/> 
+     
+
+                <StackPanel  Orientation="Vertical"
+                             RelativePanel.AlignBottomWith="ContentCarousel">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Command="{Binding CheckForUpdatesCommand}">
+                            <avalonia:MaterialIcon Kind="Update" 
+                                                   Width="32"
+                                                   Height="32"/>
+                        </Button>
+                        <Button Command="{Binding ShutdownOrRestartCommand}">
+                            <avalonia:MaterialIcon Kind="Power" 
+                                                   Width="32"
+                                                   Height="32"/>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding AppVersion}"
+                               Foreground="Gray"
+                               FontWeight="Bold"
+                               FontSize="14"/>
+                    
                 </StackPanel>
-                <TextBlock VerticalAlignment="Center"
-                           Text="{Binding AppVersion}"/>
-                <Button IsEnabled="{Binding !IsUpdating}"
-                        Command="{Binding ShutdownOrRestartCommand}">
-                    <avalonia:MaterialIcon Kind="Power" />
-                </Button>
-            </StackPanel>
         </RelativePanel>
 
 </UserControl>

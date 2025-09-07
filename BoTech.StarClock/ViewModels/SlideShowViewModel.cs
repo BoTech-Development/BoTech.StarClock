@@ -20,36 +20,6 @@ namespace BoTech.StarClock.ViewModels;
 public class SlideShowViewModel : ViewModelBase
 {
     public List<ISlideShowPage> Pages { get; set; } = new List<ISlideShowPage>();
-   
-    private int _currentProgress;
-    public int CurrentProgress
-    {
-        get =>  _currentProgress;
-        set => this.RaiseAndSetIfChanged(ref _currentProgress, value);
-    }
-    private string _currentStatus;
-
-    public string CurrentStatus
-    {
-        get => _currentStatus;
-        set => this.RaiseAndSetIfChanged(ref _currentStatus, value);
-    }
-    private bool _isProgressBarIndeterminate = false;
-
-    public bool IsProgressBarIndeterminate
-    {
-        get => _isProgressBarIndeterminate;
-        set => this.RaiseAndSetIfChanged(ref _isProgressBarIndeterminate, value);
-    }
-    private bool _isUpdating = false;
-    /// <summary>
-    /// When true the updater is working on any update.
-    /// </summary>
-    public bool IsUpdating
-    {
-        get =>  _isUpdating; 
-        set =>  this.RaiseAndSetIfChanged(ref _isUpdating, value);
-    }
     /// <summary>
     /// The Version of this app.
     /// </summary>
@@ -59,7 +29,6 @@ public class SlideShowViewModel : ViewModelBase
     public SlideShowViewModel()
     {
         UpdateManager um = new UpdateManager();
-        um.OnCurrentStatusChanged += OnOnCurrentStatusChanged;
         um.DeleteOldInstalledVersions();
         //CheckForUpdatesCommand = ReactiveCommand.Create(CheckForUpdates);
        // UpdateNowNotificationCommand = ReactiveCommand.Create(() => {_updateManager.InstallUpdates();});
@@ -89,20 +58,9 @@ public class SlideShowViewModel : ViewModelBase
         {
             DataContext = new ConnectToMobilePageViewModel()
         });
-        Pages.Add(new TimerPageView()
-        {
-            DataContext = new TimerPageViewModel()
-        });
         ShutdownOrRestartCommand = ReactiveCommand.Create(() => ShutdownOrRestart());
     }
-
-    private void OnOnCurrentStatusChanged(UpdateManager updaterInstance, string currentStatus)
-    {
-        CurrentStatus = currentStatus;
-        CurrentProgress = updaterInstance.CurrentProgress;
-        IsProgressBarIndeterminate = updaterInstance.IsProgressBarIndeterminate;
-    }
-
+    
     private void ShutdownOrRestart()
     {
         DialogHost.Show(new GenericDialogView()

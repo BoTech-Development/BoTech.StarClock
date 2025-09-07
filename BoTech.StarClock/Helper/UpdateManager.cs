@@ -38,10 +38,10 @@ public class UpdateManager
     /// <summary>
     /// The hardcoded Version Number of this Product
     /// </summary>
-    public static readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,10))
+    public static readonly VersionInfo ThisVersion = new VersionInfo(new Version(1,0,11))
     {
         IsAlpha = true,
-        Published = new DateTime(2025, 9, 7, 12, 00, 0)
+        Published = new DateTime(2025, 9, 7, 14, 40, 0)
     };
     public VersionedGitRelease NextUpdate { get; private set; }
     public bool IsNextUpdateUnstable { get; private set; } = false;
@@ -58,13 +58,14 @@ public class UpdateManager
         set
         {
             _currentStatus = value;
-            OnCurrentStatusChanged(this, _currentStatus);
+            if(OnCurrentStatusChanged != null)
+                OnCurrentStatusChanged(this, _currentStatus);
         } 
     } 
     /// <summary>
     /// This event will be invoked when the CurrentStatus string was changed.
     /// </summary>
-    public event CurrentStatusChanged OnCurrentStatusChanged;
+    public event CurrentStatusChanged? OnCurrentStatusChanged;
     /// <summary>
     /// <see cref="CurrentProgress"/> needs this field for getter and setter.
     /// </summary>
@@ -78,7 +79,8 @@ public class UpdateManager
         set
         {
             _currentProgress =  value;
-            OnCurrentStatusChanged(this, _currentStatus);
+            if(OnCurrentStatusChanged != null)
+                OnCurrentStatusChanged(this, _currentStatus);
         }
     } 
     private bool _isProgressBarIndeterminate = false;
@@ -89,7 +91,8 @@ public class UpdateManager
         set
         {
             _isProgressBarIndeterminate = value;
-            OnCurrentStatusChanged(this, _currentStatus);
+            if(OnCurrentStatusChanged != null)
+                OnCurrentStatusChanged(this, _currentStatus);
         }
     }
     public UpdateManager()
