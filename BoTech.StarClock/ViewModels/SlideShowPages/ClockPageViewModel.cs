@@ -69,7 +69,10 @@ public class ClockPageViewModel : ViewModelBase
         {
             _currentSlideshowIndex++;
             if (_currentSlideshowIndex >= _slideshow.Images.Count) _currentSlideshowIndex = 0;
-            BackgroundImage = ImageHelper.LoadFromDeviceStorage(_slideshow.Images[_currentSlideshowIndex].FullName);
+            if (_slideshow.Images[_currentSlideshowIndex].PathToResizedImage != string.Empty)
+            {
+                BackgroundImage = ImageHelper.LoadFromDeviceStorage(_slideshow.Images[_currentSlideshowIndex].PathToResizedImage);
+            }
         }
     }
 

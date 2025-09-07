@@ -34,11 +34,5 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
-        // Start Backend api asynchronously
-        Thread apiThread = new Thread(() =>
-        {
-            BoTech.StarClock.Api.Program.Main(UpdateManager.ThisVersion.GetVersionString());
-        });
-        apiThread.Start();
     }
 }

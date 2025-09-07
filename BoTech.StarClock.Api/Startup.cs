@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using BoTech.StarClock.Api.Controllers;
+using Microsoft.OpenApi.Models;
 
 namespace BoTech.StarClock.Api;
 
@@ -52,5 +53,7 @@ public class Startup
         {
             endpoints.MapControllers(); // Maps [ApiController] endpoints
         });
+        // Let's load the Slideshow and init the View at the same time.
+        new ImageSlideshowController();
     }
 }

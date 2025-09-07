@@ -35,4 +35,8 @@ public class LocalImage
     /// Full Filepath and filename
     /// </summary>
     public string FullName => System.IO.Path.Combine(Path, FileName);
+    /// <summary>
+    /// The Path to the Image that had been resized for the slideshow.
+    /// </summary>
+    public string PathToResizedImage { get; set; } = string.Empty;
 }

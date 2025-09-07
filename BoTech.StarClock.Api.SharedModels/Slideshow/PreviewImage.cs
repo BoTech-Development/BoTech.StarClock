@@ -13,6 +13,15 @@ namespace BoTech.StarClock.Api.SharedModels.Slideshow;
 public class PreviewImage
 {
     private string _fileName;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="pathToImage">The Complete path to the Image</param>
+    /// <param name="savePath">The Path without the file for saving the resized version</param>
+    /// <param name="imageFileName">The new name of the new Image</param>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
     public PreviewImage(string pathToImage, string savePath, string imageFileName, int width, int height)
     {
         ResizeImage(pathToImage, savePath, imageFileName, width, height);

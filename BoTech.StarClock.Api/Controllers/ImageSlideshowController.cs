@@ -27,6 +27,7 @@ public class ImageSlideshowController : ControllerBase
     public ImageSlideshowController()
     {
         LoadJsonPropertiesFormFile(this);
+        ApiStatusHandler.OnSlideShowChanged.Invoke(_slideshow);
     }
 
     public static Slideshow GetSlideshow()
@@ -175,12 +176,29 @@ public class ImageSlideshowController : ControllerBase
         try
         {
             LocalImage image = _storedImages.CreateAndAdd(file, SystemPaths.GetBaseProgramDataPath("Images/Slideshow/"));
-            SaveChanges();
+            
             // Save the file to the server
             using (var stream = new FileStream(image.FullName, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
+            try
+            {
+                string savePath = SystemPaths.GetBaseProgramDataPath("Images/Slideshow/Resized/");
+                PreviewImage slideshowImage = new PreviewImage(
+                    image.FullName,
+                    savePath,
+                    image.FileName, 
+                    800, 
+                    480);
+                image.PathToResizedImage = savePath + image.FileName + ".jpeg";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            SaveChanges();
+
             return Ok(image.Id);
         }
         catch (Exception ex)
@@ -202,11 +220,13 @@ public class ImageSlideshowController : ControllerBase
         if ((image = _storedImages.Find(si => si.Id.ToString().Equals(id))) != null)
         {
              System.IO.File.Delete(image.FullName);
-            _storedImages.Remove(image);
-            _slideshow.Images.Remove(image);
-            ApiStatusHandler.OnSlideShowChanged.Invoke(_slideshow);
-            SaveChanges();
-            return Ok(image.Id);
+             if(image.PathToResizedImage != string.Empty)
+                 System.IO.File.Delete(image.PathToResizedImage);
+             _storedImages.Remove(image);
+             _slideshow.Images.Remove(image);
+             ApiStatusHandler.OnSlideShowChanged.Invoke(_slideshow);
+             SaveChanges();
+             return Ok(image.Id);
         }
         return NotFound("Image not found.");
     }
@@ -238,7 +258,7 @@ public class ImageSlideshowController : ControllerBase
             {
                 PreviewImage previewImage = new PreviewImage(
                     image.FullName,
-                    SystemPaths.GetBaseProgramDataPath("Images/Slideshow/Resized/"), 
+                    SystemPaths.GetBaseProgramDataPath("Cache/Images/Slideshow/Resized/"), 
                     image.FileName, 
                     width, 
                     height);
@@ -256,6 +276,7 @@ public class ImageSlideshowController : ControllerBase
         }
         return NotFound("Image not found.");
     }
+    
     /// <summary>
     /// Saves all Properties to a .json file.
     /// </summary>
